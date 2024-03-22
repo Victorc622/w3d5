@@ -5,26 +5,23 @@ class PolyTreeNode
     @parent = nil
     @children = []
   end
-
+  attr_writer :children
   attr_reader :value, :parent, :children
   
 
 
   def parent=(parent_name)
     
-    old_parent = @parent
+    if @parent && @parent.children.include?(self)
     
+        index = @parent.children.index(self)
+        
+        @parent.children = @parent.children[0...index] + @parent.children[index + 1..-1]
+    end
         
     @parent = parent_name
     unless parent_name == nil || parent.children.include?(self)
         @parent.children << self
-    end
-
-    if old_parent
-    
-        index = old_parent.children.index(self)
-        
-        old_parent.children = old_parent.children[0...index] + old_parent.children[index + 1..-1]
     end
 
   end
@@ -45,7 +42,15 @@ class PolyTreeNode
         child_node.parent = nil
     end
 
-   
+   def dfs(target_value)
+    return self if self.value == target_value
+    self.children.each do |child|
+      result = child.dfs(target_value) 
+      
+      return result if result != nil
+    end
+      return nil
+   end
 
 
 
@@ -54,3 +59,4 @@ class PolyTreeNode
 
   end
 end
+
