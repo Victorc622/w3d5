@@ -1,7 +1,12 @@
+require "byebug"
 class KnightPathFinder
     def initialize(pos)
         @pos = pos
+        @considered_positions = [pos]
     end
+
+    attr_accessor :considered_positions, :pos
+
     def self.valid_moves(pos)
         arr = []
         move_1 = [pos[0] + 1, pos[1] + 2]
@@ -23,4 +28,39 @@ class KnightPathFinder
 
         return arr
     end
+
+    def new_move_positions
+        return_array =[]
+        all_pos = KnightPathFinder.valid_moves(@pos)
+        all_pos.each do |potential_position|
+            if !@considered_positions.include?(potential_position)
+             
+                @considered_positions << potential_position
+                debugger
+                return_array << potential_position
+
+            end
+        end
+        return return_array
+    end
+
+    def build_move_tree
+
+        q = [KnightPathFinder.new(@pos)]
+        
+        until q.empty?
+         
+            front_node = q.shift
+            new_moves = front_node.new_move_positions
+            debugger
+            new_moves.each do |new_pos|
+                 q << KnightPathFinder.new(new_pos) unless new_pos == front_node.pos
+            end
+        end
+    end
+
+    def inspect
+        @pos
+    end
+
 end
